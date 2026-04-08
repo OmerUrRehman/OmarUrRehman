@@ -8,7 +8,7 @@ export default function Contact() {
       
       <div className="relative z-10 pointer-events-none">
         <motion.div 
-          className="text-[0.7rem] tracking-[0.25em] uppercase text-accent-dim mb-8"
+          className="text-[0.7rem] tracking-[0.25em] uppercase text-accent mb-8 font-semibold"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}

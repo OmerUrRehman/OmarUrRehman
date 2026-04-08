@@ -26,8 +26,8 @@ export default function Hero({ isScrolled }: { isScrolled: boolean }) {
         animate={{ opacity: 1 }}
         transition={{ delay: 1.2, duration: 0.8 }}
       >
-        <span className="text-[0.65rem] tracking-[0.2em] uppercase text-muted" style={{ writingMode: 'vertical-rl' }}>Scroll</span>
-        <div className="w-[1px] h-[60px] bg-line relative overflow-hidden">
+        <span className="text-[0.65rem] tracking-[0.2em] uppercase text-accent font-semibold" style={{ writingMode: 'vertical-rl' }}>Scroll</span>
+        <div className="w-[1px] h-[60px] bg-accent/30 relative overflow-hidden">
           <motion.div 
             className="absolute left-0 w-full h-full bg-accent"
             animate={{ top: ['-100%', '100%', '100%'] }}

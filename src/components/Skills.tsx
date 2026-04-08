@@ -32,13 +32,13 @@ export default function Skills() {
   return (
     <section id="about" className="px-6 md:px-16 lg:px-32 py-24 md:py-40 relative">
       <motion.div 
-        className="text-[0.7rem] tracking-[0.25em] uppercase text-accent-dim mb-4 flex items-center gap-4"
+        className="text-[0.7rem] tracking-[0.25em] uppercase text-accent mb-4 flex items-center gap-4 font-semibold"
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
       >
-        <div className="w-[30px] h-[1px] bg-accent-dim"></div>
-        <span className="text-[0.65rem] tracking-[0.15em] text-muted font-mono mr-2">03</span> Skills
+        <div className="w-[30px] h-[1px] bg-accent"></div>
+        <span className="text-[0.65rem] tracking-[0.15em] text-primary font-mono mr-2">03</span> Skills
       </motion.div>
       
       <motion.h2 

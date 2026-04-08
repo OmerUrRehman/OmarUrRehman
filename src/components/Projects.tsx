@@ -28,13 +28,13 @@ export default function Projects() {
   return (
     <section id="work" className="px-6 md:px-16 lg:px-32 py-24 md:py-40 relative">
       <motion.div 
-        className="text-[0.7rem] tracking-[0.25em] uppercase text-accent-dim mb-4 flex items-center gap-4"
+        className="text-[0.7rem] tracking-[0.25em] uppercase text-accent mb-4 flex items-center gap-4 font-semibold"
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
       >
-        <div className="w-[30px] h-[1px] bg-accent-dim"></div>
-        <span className="text-[0.65rem] tracking-[0.15em] text-muted font-mono mr-2">04</span> Portfolio
+        <div className="w-[30px] h-[1px] bg-accent"></div>
+        <span className="text-[0.65rem] tracking-[0.15em] text-primary font-mono mr-2">04</span> Portfolio
       </motion.div>
       
       <motion.h2 
@@ -90,7 +90,7 @@ export default function Projects() {
             </div>
             
             <div className={i % 2 !== 0 ? 'md:order-1' : ''}>
-              <div className="text-[0.65rem] tracking-[0.2em] uppercase text-accent-dim mb-4">{project.tag}</div>
+              <div className="text-[0.65rem] tracking-[0.2em] uppercase text-accent mb-4 font-semibold">{project.tag}</div>
               <h3 className="font-serif text-2xl md:text-4xl tracking-tight mb-4">{project.title}</h3>
               <p className="text-sm text-secondary leading-relaxed font-light mb-8">{project.desc}</p>
               <div className="flex flex-wrap gap-2 mb-6">

@@ -36,8 +36,8 @@ export default function Sequence() {
   return (
     <section ref={ref} className="h-[600vh] relative">
       <div className="sticky top-0 h-screen flex items-center justify-center overflow-hidden">
-        <div className="absolute top-12 md:top-24 left-8 md:left-16 z-20">
-          <h2 className="font-mono text-sm tracking-[0.2em] uppercase text-secondary">What I Can Do</h2>
+        <div className="absolute left-6 md:left-12 top-1/2 -translate-y-1/2 z-20">
+          <h2 className="font-mono text-[0.65rem] md:text-sm tracking-[0.2em] uppercase text-accent font-semibold" style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}>What I Can Do</h2>
         </div>
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="w-[90vw] md:w-[70vw] h-[50vh] md:h-[70vh] bg-surface rounded-lg relative overflow-hidden flex items-center justify-center">
@@ -113,7 +113,7 @@ export default function Sequence() {
           </div>
         </div>
 
-        <div className="absolute bottom-8 md:bottom-16 left-8 md:left-16 right-8 md:right-16 z-10 h-[120px] md:h-[100px]">
+        <div className="absolute bottom-12 md:bottom-16 left-[5vw] md:left-[15vw] right-[5vw] md:right-[15vw] z-10 h-[120px] md:h-[100px]">
           <AnimatePresence mode="wait">
             <motion.div
               key={activeIndex}

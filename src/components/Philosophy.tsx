@@ -11,12 +11,12 @@ export default function Philosophy() {
   return (
     <section className="px-6 md:px-16 lg:px-32 py-24 md:py-40 relative">
       <motion.div 
-        className="text-[0.7rem] tracking-[0.25em] uppercase text-accent-dim mb-4 flex items-center gap-4"
+        className="text-[0.7rem] tracking-[0.25em] uppercase text-accent mb-4 flex items-center gap-4 font-semibold"
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
       >
-        <div className="w-[30px] h-[1px] bg-accent-dim"></div>
+        <div className="w-[30px] h-[1px] bg-accent"></div>
         Interests
       </motion.div>
       
@@ -38,7 +38,7 @@ export default function Philosophy() {
             viewport={{ once: true }}
             transition={{ delay: i * 0.1 }}
           >
-            <div className="font-serif text-5xl text-accent-dim mb-4">{item.num}</div>
+            <div className="font-serif text-5xl text-accent mb-4 opacity-50">{item.num}</div>
             <div className="text-lg font-medium mb-3 tracking-tight">{item.title}</div>
             <p className="text-sm text-secondary leading-relaxed font-light">{item.desc}</p>
           </motion.div>

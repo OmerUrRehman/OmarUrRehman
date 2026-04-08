@@ -40,13 +40,13 @@ export default function Experience() {
   return (
     <section id="experience" className="px-6 md:px-16 lg:px-32 py-24 md:py-40 relative" ref={containerRef}>
       <motion.div 
-        className="text-[0.7rem] tracking-[0.25em] uppercase text-accent-dim mb-4 flex items-center gap-4"
+        className="text-[0.7rem] tracking-[0.25em] uppercase text-accent mb-4 flex items-center gap-4 font-semibold"
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
       >
-        <div className="w-[30px] h-[1px] bg-accent-dim"></div>
-        <span className="text-[0.65rem] tracking-[0.15em] text-muted font-mono mr-2">02</span> Background
+        <div className="w-[30px] h-[1px] bg-accent"></div>
+        <span className="text-[0.65rem] tracking-[0.15em] text-primary font-mono mr-2">02</span> Background
       </motion.div>
       
       <motion.h2 
@@ -93,7 +93,7 @@ export default function Experience() {
               <div className="absolute inset-0 bg-gradient-to-r from-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
               
               <div className="relative z-10">
-                <div className="text-[0.7rem] tracking-[0.15em] text-accent-dim mb-3 font-mono transition-colors duration-300 group-hover:text-accent">{exp.year}</div>
+                <div className="text-[0.7rem] tracking-[0.15em] text-accent mb-3 font-mono transition-colors duration-300 group-hover:text-accent font-semibold">{exp.year}</div>
                 <div className="font-serif text-2xl md:text-3xl tracking-tight mb-1 transition-colors duration-300 group-hover:text-primary">{exp.role}</div>
                 <div className="text-sm text-accent mb-4">{exp.company}</div>
                 <p className="text-sm leading-relaxed text-secondary max-w-[500px] font-light group-hover:text-primary/80 transition-colors duration-300">{exp.desc}</p>
