@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence, LayoutGroup } from 'motion/react';
 
 // Components
 import Cursor from './components/Cursor';
@@ -19,6 +19,15 @@ import Footer from './components/Footer';
 
 export default function App() {
   const [loading, setLoading] = useState(true);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 100);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
     <>
@@ -29,15 +38,16 @@ export default function App() {
       </AnimatePresence>
       
       {!loading && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1 }}
-        >
-          <Navbar />
-          <main>
-            <Hero />
-            <Marquee />
+        <LayoutGroup>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1 }}
+          >
+            <Navbar isScrolled={isScrolled} />
+            <main>
+              <Hero isScrolled={isScrolled} />
+              <Marquee />
             <Sequence />
             <Experience />
             <Skills />
@@ -49,6 +59,7 @@ export default function App() {
           </main>
           <Footer />
         </motion.div>
+        </LayoutGroup>
       )}
     </>
   );
