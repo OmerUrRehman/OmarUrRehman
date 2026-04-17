@@ -27,8 +27,7 @@ export default function BackgroundAnimation() {
       uniforms: {
         uTime: { value: 0 },
         uResolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
-        uMouse: { value: new THREE.Vector2(0.5, 0.5) },
-        uIsLight: { value: document.documentElement.classList.contains('light') ? 1.0 : 0.0 }
+        uMouse: { value: new THREE.Vector2(0.5, 0.5) }
       },
       vertexShader: `
         varying vec2 vUv;
@@ -41,7 +40,6 @@ export default function BackgroundAnimation() {
         uniform float uTime;
         uniform vec2 uMouse;
         uniform vec2 uResolution;
-        uniform float uIsLight;
 
         varying vec2 vUv;
 
@@ -137,21 +135,13 @@ export default function BackgroundAnimation() {
             float finalIntensity = intensity + border + blockFill;
 
             // Theme colors matching the website's accent (Gold)
-            vec3 darkColor = vec3(0.898, 0.757, 0.345); // #e5c158
-            vec3 lightColor = vec3(0.851, 0.467, 0.024); // #d97706
+            vec3 color = vec3(0.898, 0.757, 0.345); // #e5c158
             
             // Add a bit of brightness variation based on intensity
-            darkColor = mix(darkColor, vec3(1.0, 0.95, 0.8), intensity * 0.4);
-            lightColor = mix(lightColor, vec3(0.95, 0.6, 0.1), intensity * 0.4);
+            color = mix(color, vec3(1.0, 0.95, 0.8), intensity * 0.4);
 
-            vec3 color = mix(darkColor, lightColor, uIsLight);
             float alpha = finalIntensity;
             
-            // Boost opacity slightly in light mode for better visibility
-            if (uIsLight > 0.5) {
-                alpha *= 1.5;
-            }
-
             gl_FragColor = vec4(color, clamp(alpha, 0.0, 1.0));
         }
       `,
@@ -185,7 +175,6 @@ export default function BackgroundAnimation() {
     // Animation Loop
     const clock = new THREE.Clock();
     let animationFrameId: number;
-    let currentIsLight = document.documentElement.classList.contains('light');
 
     const animate = () => {
       animationFrameId = requestAnimationFrame(animate);
@@ -196,13 +185,6 @@ export default function BackgroundAnimation() {
       // Smooth mouse follow (damping)
       currentMouse.lerp(targetMouse, 0.05);
       material.uniforms.uMouse.value.copy(currentMouse);
-
-      // Check for theme changes
-      const isLight = document.documentElement.classList.contains('light');
-      if (isLight !== currentIsLight) {
-        currentIsLight = isLight;
-        material.uniforms.uIsLight.value = isLight ? 1.0 : 0.0;
-      }
 
       renderer.render(scene, camera);
     };

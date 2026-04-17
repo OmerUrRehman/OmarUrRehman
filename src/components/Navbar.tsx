@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { motion } from 'motion/react';
-import ThemeToggle from './ThemeToggle';
 
 export default function Navbar({ isScrolled }: { isScrolled: boolean }) {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -31,11 +30,9 @@ export default function Navbar({ isScrolled }: { isScrolled: boolean }) {
             <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-accent transition-all duration-400 ease-[cubic-bezier(0.65,0,0.35,1)] group-hover:w-full"></span>
           </a>
         ))}
-        <ThemeToggle />
       </div>
 
       <div className="md:hidden flex items-center gap-4">
-        <ThemeToggle />
         <div 
           className="flex flex-col gap-[6px] cursor-pointer p-2 hover-target"
           onClick={() => setMenuOpen(!menuOpen)}
