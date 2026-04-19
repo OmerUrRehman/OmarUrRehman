@@ -50,11 +50,11 @@ export default function Skills() {
         Technical Skills & Tools
       </motion.h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-[1px] bg-line mt-12">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
         {skills.map((skill, i) => (
           <motion.div 
             key={i}
-            className="bg-background p-10 relative overflow-hidden group hover-target"
+            className="glass-card rounded-2xl p-10 group hover-target transition-all duration-500"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}

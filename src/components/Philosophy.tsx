@@ -29,10 +29,11 @@ export default function Philosophy() {
         My Current Interests
       </motion.h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 mt-12">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 mt-12">
         {items.map((item, i) => (
           <motion.div 
             key={i}
+            className="glass-card rounded-2xl p-8 md:p-12 transition-all duration-500 hover-target"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}

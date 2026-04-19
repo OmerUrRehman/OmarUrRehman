@@ -46,16 +46,16 @@ export default function Projects() {
         Featured Projects
       </motion.h2>
 
-      <div className="grid gap-24 mt-16">
+      <div className="grid gap-16 mt-16">
         {projects.map((project, i) => (
           <motion.div 
             key={i}
-            className={`grid grid-cols-1 md:grid-cols-[1.2fr_1fr] gap-8 md:gap-16 items-center ${i % 2 !== 0 ? 'md:grid-cols-[1fr_1.2fr]' : ''}`}
+            className={`glass-card rounded-2xl p-8 md:p-12 grid grid-cols-1 md:grid-cols-[1.2fr_1fr] gap-8 md:gap-16 items-center transition-all duration-500 ${i % 2 !== 0 ? 'md:grid-cols-[1fr_1.2fr]' : ''}`}
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <div className={`aspect-video md:aspect-[4/3] bg-surface rounded-md relative overflow-hidden group hover-target ${i % 2 !== 0 ? 'md:order-2' : ''}`}>
+            <div className={`aspect-video md:aspect-[4/3] bg-black/40 rounded-xl relative overflow-hidden group hover-target ${i % 2 !== 0 ? 'md:order-2' : ''}`}>
               <div className="absolute inset-0 flex items-center justify-center transition-transform duration-700 ease-[cubic-bezier(0.65,0,0.35,1)] group-hover:scale-105">
                 {/* Abstract Visuals based on index */}
                 {i === 0 && (

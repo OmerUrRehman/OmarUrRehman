@@ -35,12 +35,17 @@ export default function Sequence() {
 
   return (
     <section ref={ref} className="h-[600vh] relative">
-      <div className="sticky top-0 h-screen flex items-center justify-center overflow-hidden">
+      <div className="sticky top-0 h-screen flex flex-col items-center justify-center overflow-hidden">
         <div className="absolute left-6 md:left-12 top-1/2 -translate-y-1/2 z-20">
-          <h2 className="font-mono text-[0.65rem] md:text-sm tracking-[0.2em] uppercase text-accent font-semibold" style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}>What I Can Do</h2>
+          <div className="font-mono text-[0.65rem] md:text-sm tracking-[0.2em] uppercase text-accent font-semibold flex items-center justify-center gap-3" style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}>
+            <span className="text-[0.65rem] tracking-[0.15em] text-primary">01</span>
+            <div className="w-[1px] h-[30px] bg-accent"></div>
+            What I Can Do
+          </div>
         </div>
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="w-[90vw] md:w-[70vw] h-[50vh] md:h-[70vh] bg-surface rounded-lg relative overflow-hidden flex items-center justify-center">
+        
+        <div className="absolute top-[10%] bottom-[160px] md:bottom-[150px] left-[15vw] md:left-[15vw] right-[15vw] md:right-[15vw] flex items-center justify-center">
+          <div className="w-[85vw] md:w-[70vw] h-[45vh] md:h-full max-h-[55vh] glass-card transition-all duration-500 rounded-2xl flex items-center justify-center">
             
             {/* Progress Bar at the top of the card */}
             <div className="absolute top-0 left-0 w-full h-1 bg-line z-30">
@@ -113,7 +118,7 @@ export default function Sequence() {
           </div>
         </div>
 
-        <div className="absolute bottom-12 md:bottom-16 left-[5vw] md:left-[15vw] right-[5vw] md:right-[15vw] z-10 h-[120px] md:h-[100px]">
+        <div className="absolute bottom-10 md:bottom-14 left-[10vw] md:left-[15vw] right-[10vw] md:right-[15vw] z-10 h-[100px] md:h-[120px] max-w-[70vw] mx-auto">
           <AnimatePresence mode="wait">
             <motion.div
               key={activeIndex}

@@ -4,6 +4,7 @@ import { motion, AnimatePresence, LayoutGroup } from "motion/react";
 // Components
 import Cursor from "./components/Cursor";
 import Loader from "./components/Loader";
+import NeuralBackground from "./components/NeuralBackground";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import Marquee from "./components/Marquee";
@@ -32,29 +33,31 @@ export default function App() {
   return (
     <LayoutGroup>
       <div className="noise"></div>
+      <NeuralBackground />
       <Cursor />
-      <AnimatePresence>
-        {loading && <Loader onComplete={() => setLoading(false)} />}
+      <AnimatePresence mode="sync">
+        {loading ? (
+          <Loader key="loader" onComplete={() => setLoading(false)} />
+        ) : (
+          <motion.div
+            key="main-content"
+          >
+            <Navbar isScrolled={isScrolled} />
+            <main>
+              <Hero isScrolled={isScrolled} />
+              <Marquee />
+              <Sequence />
+              <Experience />
+              <Skills />
+              <Projects />
+              <Philosophy />
+              <Testimonial />
+              <Contact />
+            </main>
+            <Footer />
+          </motion.div>
+        )}
       </AnimatePresence>
-
-      {!loading && (
-        <motion.div>
-          <Navbar isScrolled={isScrolled} />
-          <main>
-            <Hero isScrolled={isScrolled} />
-            <Marquee />
-            <Sequence />
-            <Experience />
-            <Skills />
-            <Stats />
-            <Projects />
-            <Philosophy />
-            <Testimonial />
-            <Contact />
-          </main>
-          <Footer />
-        </motion.div>
-      )}
     </LayoutGroup>
   );
 }

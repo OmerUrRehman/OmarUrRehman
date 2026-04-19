@@ -85,7 +85,7 @@ export default function Experience() {
             
             {/* Interactive Card Wrapper */}
             <motion.div 
-              className="p-6 md:p-8 rounded-xl border border-transparent transition-all duration-500 group-hover:bg-surface group-hover:border-line relative overflow-hidden"
+              className="p-6 md:p-8 rounded-xl glass-card transition-all duration-500"
               whileHover={{ x: 10 }}
               transition={{ type: "spring", stiffness: 400, damping: 30 }}
             >

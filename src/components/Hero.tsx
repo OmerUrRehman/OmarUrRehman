@@ -1,19 +1,25 @@
 import { motion } from "motion/react";
-import BackgroundAnimation from "./BackgroundAnimation";
 
 export default function Hero({ isScrolled }: { isScrolled: boolean }) {
   return (
-    <section className="min-h-screen flex flex-col justify-end items-center px-6 md:px-16 lg:px-32 relative overflow-hidden pb-20 md:pb-24">
-      <BackgroundAnimation />
-
-      <div className="relative z-10 h-[120px] md:h-[150px] flex items-center justify-center w-full">
+    <section className="min-h-screen flex flex-col justify-center items-center px-6 md:px-16 lg:px-32 relative overflow-hidden">
+      <div className="relative z-10 flex items-center justify-center w-full h-full">
         {!isScrolled && (
           <motion.div
-            layoutId="name"
-            className="font-serif text-[10vw] md:text-[8vw] flex items-center justify-center text-primary whitespace-nowrap leading-[1] font-medium tracking-tight uppercase"
-            transition={{ duration: 0.9, ease: [0.65, 0, 0.35, 1] }}
+             layoutId="hero-text"
+             className="flex items-center justify-center font-serif text-primary tracking-tight font-medium uppercase leading-[1] whitespace-nowrap"
+             transition={{ duration: 1.4, ease: [0.65, 0, 0.35, 1] }}
           >
-            OMAR UR REHMAN
+            <div className="relative z-10 flex items-center">
+              <span className="text-[10vw] md:text-[5rem] lg:text-[6.5rem] block">
+                OMAR
+              </span>
+            </div>
+            <div className="overflow-hidden flex relative z-0 items-center -ml-[0.1em]">
+              <span className="text-[10vw] md:text-[5rem] lg:text-[6.5rem] block whitespace-nowrap pl-[0.1em]">
+                &nbsp;UR REHMAN
+              </span>
+            </div>
           </motion.div>
         )}
       </div>

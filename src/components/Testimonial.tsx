@@ -20,7 +20,7 @@ export default function Testimonial() {
         transition={{ delay: 0.3 }}
       >
         <div className="w-10 h-[1px] bg-accent-dim"></div>
-        <span className="text-xs tracking-[0.1em] text-secondary uppercase">Omar Ur Rehman — Personal Statement</span>
+        <span className="text-xs tracking-[0.1em] text-secondary uppercase">Omar Ur Rehman - Personal Statement</span>
       </motion.div>
     </section>
   );

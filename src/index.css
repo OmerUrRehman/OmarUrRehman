@@ -23,6 +23,10 @@
   }
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   background-color: var(--color-background);
   color: var(--color-primary);
@@ -93,4 +97,32 @@ body {
 .text-stroke-filled {
   -webkit-text-stroke: none;
   color: var(--color-primary);
+}
+
+/* Custom premium acrylic texture for cards */
+.glass-card {
+  /* Essentially solid, letting only 4% of the background bleed through for a physical acrylic feel */
+  background: rgba(28, 25, 23, 0.96); 
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+  position: relative;
+}
+
+/* Subtle physical shine over the card */
+.glass-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0) 100%);
+  z-index: 0;
+}
+
+.glass-card:hover {
+  background: rgba(28, 25, 23, 0.99);
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6);
 }
