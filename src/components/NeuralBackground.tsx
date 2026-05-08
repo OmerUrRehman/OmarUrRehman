@@ -1,177 +1,87 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { Network, Cpu, Database, Binary, Component, GitBranch, Code2, Globe2, Layers, Cpu as Microchip } from 'lucide-react';
 
-// Configuration
+const CS_CONCEPTS = [
+  { title: "Big O Notation", desc: "Measures computational efficiency formulas.", icon: <Binary className="w-4 h-4"/> },
+  { title: "Recursion", desc: "A method where the solution depends on smaller instances of the same problem.", icon: <GitBranch className="w-4 h-4"/> },
+  { title: "Hash Table", desc: "Data structure for fast key-value lookups.", icon: <Database className="w-4 h-4"/> },
+  { title: "Polymorphism", desc: "Single interface representing varying underlying data types.", icon: <Layers className="w-4 h-4"/> },
+  { title: "Concurrency", desc: "Simultaneous processing of multiple execution threads.", icon: <Cpu className="w-4 h-4"/> },
+  { title: "Neural Graph", desc: "Interconnected nodes passing weighted signals.", icon: <Network className="w-4 h-4"/> },
+  { title: "Binary Trees", desc: "Hierarchical data bounded by two children per node.", icon: <GitBranch className="w-4 h-4"/> },
+  { title: "REST API", desc: "Stateless architecture mapping endpoints to resources.", icon: <Globe2 className="w-4 h-4"/> },
+  { title: "Garbage Collection", desc: "Automated engine for dynamic memory release.", icon: <Microchip className="w-4 h-4"/> },
+  { title: "Encapsulation", desc: "Bundling data and methods into isolated objects.", icon: <Component className="w-4 h-4"/> }
+];
+
 const CONFIG = {
-  NODE_COUNT: 85,
-  MAX_DISTANCE: 220, // Max distance for lines between nodes
-  MOUSE_RADIUS: 220, // Distance mouse influences nodes
-  MOUSE_ATTRACT_FORCE: 0.02,
-  SIGNAL_CHANCE: 0.05, // Probability per frame of spawning a signal
-  SIGNAL_SPEED: 0.015,
-  RIPPLE_SPEED: 5,
-  RIPPLE_MAX_RADIUS: 120, // Keep the click radius smaller and tighter
-  RIPPLE_PUSH_FORCE: 2, // Gentler push
+  NODE_COUNT: 45,
+  MAX_DISTANCE: 250,
+  MOUSE_RADIUS: 150,
 };
 
 class Node {
-  x: number;
-  y: number;
+  id: number;
   baseX: number;
   baseY: number;
-  vx: number;
-  vy: number;
-  originalVx: number;
-  originalVy: number;
-  radius: number;
-
-  constructor(width: number, height: number) {
-    this.baseX = Math.random() * width;
-    this.baseY = Math.random() * height;
-    this.x = this.baseX;
-    this.y = this.baseY;
-    
-    // Slow drift velocity
-    this.originalVx = (Math.random() - 0.5) * 0.4;
-    this.originalVy = (Math.random() - 0.5) * 0.4;
-    this.vx = this.originalVx;
-    this.vy = this.originalVy;
-    this.radius = Math.random() * 1.5 + 0.5;
-  }
-
-  update(width: number, height: number, mouse: { x: number; y: number; active: boolean }, mouseRadius: number) {
-    // Basic drift
-    this.baseX += this.originalVx;
-    this.baseY += this.originalVy;
-
-    // Bounce off walls (wrap around or bounce)
-    if (this.baseX < 0 || this.baseX > width) this.originalVx *= -1;
-    if (this.baseY < 0 || this.baseY > height) this.originalVy *= -1;
-
-    // Mouse Interaction (Attraction)
-    let dx = mouse.x - this.baseX;
-    let dy = mouse.y - this.baseY;
-    let distance = Math.sqrt(dx * dx + dy * dy);
-
-    if (mouse.active && distance < mouseRadius) {
-      let forceDirectionX = dx / distance;
-      let forceDirectionY = dy / distance;
-      // Closer it is, stronger the pull, but capped
-      let force = (mouseRadius - distance) / mouseRadius;
-      
-      this.vx = this.originalVx + forceDirectionX * force * CONFIG.MOUSE_ATTRACT_FORCE * 100;
-      this.vy = this.originalVy + forceDirectionY * force * CONFIG.MOUSE_ATTRACT_FORCE * 100;
-      
-      // Move towards mouse
-      this.x += (mouse.x - this.x) * 0.05 * force;
-      this.y += (mouse.y - this.y) * 0.05 * force;
-    } else {
-      // Spring back to base position
-      this.x += (this.baseX - this.x) * 0.05;
-      this.y += (this.baseY - this.y) * 0.05;
-      this.vx = this.originalVx;
-      this.vy = this.originalVy;
-    }
-  }
-
-  draw(ctx: CanvasRenderingContext2D, alphaBase: number) {
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(255, 255, 255, ${0.4 * alphaBase})`;
-    ctx.fill();
-  }
-}
-
-class Signal {
-  startNode: Node;
-  endNode: Node;
-  progress: number;
-  speed: number;
-  active: boolean;
-
-  constructor(start: Node, end: Node) {
-    this.startNode = start;
-    this.endNode = end;
-    this.progress = 0;
-    this.speed = CONFIG.SIGNAL_SPEED * (Math.random() * 0.5 + 0.8);
-    this.active = true;
-  }
-
-  update() {
-    this.progress += this.speed;
-    if (this.progress >= 1) {
-      this.active = false;
-    }
-  }
-
-  draw(ctx: CanvasRenderingContext2D, alphaBase: number) {
-    if (!this.active) return;
-    
-    // Interpolate position
-    let currentX = this.startNode.x + (this.endNode.x - this.startNode.x) * this.progress;
-    let currentY = this.startNode.y + (this.endNode.y - this.startNode.y) * this.progress;
-
-    ctx.beginPath();
-    ctx.arc(currentX, currentY, 2, 0, Math.PI * 2);
-    // Gold accent color #e5c158
-    ctx.fillStyle = `rgba(229, 193, 88, ${0.9 * alphaBase})`; 
-    ctx.fill();
-
-    // Glow effect
-    ctx.shadowBlur = 10;
-    ctx.shadowColor = `rgba(229, 193, 88, ${1 * alphaBase})`;
-    ctx.fill();
-    ctx.shadowBlur = 0;
-  }
-}
-
-class Ripple {
   x: number;
   y: number;
   radius: number;
-  active: boolean;
+  timeOffset: number;
+  hovered: boolean;
+  concept: typeof CS_CONCEPTS[0];
 
-  constructor(x: number, y: number) {
-    this.x = x;
-    this.y = y;
-    this.radius = 0;
-    this.active = true;
+  constructor(id: number, bx: number, by: number) {
+    this.id = id;
+    this.baseX = bx;
+    this.baseY = by;
+    this.x = bx;
+    this.y = by;
+    this.radius = Math.random() * 1.5 + 1.5;
+    this.timeOffset = Math.random() * Math.PI * 2;
+    this.hovered = false;
+    this.concept = CS_CONCEPTS[Math.floor(Math.random() * CS_CONCEPTS.length)];
   }
 
-  update(nodes: Node[]) {
-    this.radius += CONFIG.RIPPLE_SPEED;
-    if (this.radius > CONFIG.RIPPLE_MAX_RADIUS) {
-      this.active = false;
-    }
+  update(time: number, mouse: { x: number; y: number; active: boolean }) {
+    // Gentle orbit around its own place
+    this.x = this.baseX + Math.sin(time * 0.0005 + this.timeOffset) * 15;
+    this.y = this.baseY + Math.cos(time * 0.0007 + this.timeOffset) * 15;
 
-    // Push nodes outwards as the wave passes them
-    for (let node of nodes) {
-      let dx = node.x - this.x;
-      let dy = node.y - this.y;
-      let dist = Math.sqrt(dx * dx + dy * dy);
-
-      // If node is right on the expanding ring edge
-      if (Math.abs(dist - this.radius) < 20) {
-        let force = (CONFIG.RIPPLE_MAX_RADIUS - this.radius) / CONFIG.RIPPLE_MAX_RADIUS; // Weakens over time
-        node.x += (dx / dist) * force * CONFIG.RIPPLE_PUSH_FORCE;
-        node.y += (dy / dist) * force * CONFIG.RIPPLE_PUSH_FORCE;
+    // Hover detection
+    this.hovered = false;
+    if (mouse.active) {
+      let dx = mouse.x - this.x;
+      let dy = mouse.y - this.y;
+      if (Math.sqrt(dx * dx + dy * dy) < 40) {
+        this.hovered = true;
+        // Minor pull
+        this.x += dx * 0.1;
+        this.y += dy * 0.1;
       }
     }
   }
 
   draw(ctx: CanvasRenderingContext2D) {
-    if (!this.active) return;
-    let alpha = 1 - (this.radius / CONFIG.RIPPLE_MAX_RADIUS);
     ctx.beginPath();
-    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-    // Gold accent color ring
-    ctx.strokeStyle = `rgba(229, 193, 88, ${alpha * 0.5})`;
-    ctx.lineWidth = 2;
-    ctx.stroke();
+    ctx.arc(this.x, this.y, this.hovered ? this.radius * 2 : this.radius, 0, Math.PI * 2);
+    ctx.fillStyle = this.hovered ? 'rgba(229, 193, 88, 1)' : 'rgba(255, 255, 255, 0.5)';
+    ctx.fill();
+    
+    if (this.hovered) {
+      ctx.shadowBlur = 10;
+      ctx.shadowColor = 'rgba(229, 193, 88, 0.8)';
+      ctx.fill();
+      ctx.shadowBlur = 0;
+    }
   }
 }
 
 export default function NeuralBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [activeBox, setActiveBox] = useState<{ id: number; x: number; y: number; concept: typeof CS_CONCEPTS[0] } | null>(null);
+  const nodesRef = useRef<Node[]>([]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -181,10 +91,6 @@ export default function NeuralBackground() {
     if (!ctx) return;
 
     let animationFrameId: number;
-    let nodes: Node[] = [];
-    let signals: Signal[] = [];
-    let ripples: Ripple[] = [];
-    
     let width = window.innerWidth;
     let height = window.innerHeight;
 
@@ -194,27 +100,34 @@ export default function NeuralBackground() {
       active: false
     };
 
+    const initNodes = () => {
+      nodesRef.current = [];
+      const cols = Math.ceil(width / 110); // Decreased grid size to increase density
+      const rows = Math.ceil(height / 110);
+      const cellW = width / cols;
+      const cellH = height / rows;
+
+      let idCounter = 0;
+      for (let i = 0; i < cols; i++) {
+        for (let j = 0; j < rows; j++) {
+          if (Math.random() > 0.4) { // 60% chance to place a node in the cell
+            let bx = i * cellW + Math.random() * cellW;
+            let by = j * cellH + Math.random() * cellH;
+            nodesRef.current.push(new Node(idCounter++, bx, by));
+          }
+        }
+      }
+    };
+
     const resize = () => {
       width = window.innerWidth;
       height = window.innerHeight;
       canvas.width = width;
       canvas.height = height;
-      
-      // Reinitialize nodes on wide resize to fill screen
       initNodes();
+      setActiveBox(null);
     };
 
-    const initNodes = () => {
-      nodes = [];
-      // Adjust count based on screen size (decreased divisor for massively fuller canvas)
-      const count = Math.floor((width * height) / 9500); 
-      const actualCount = Math.min(Math.max(count, 80), 280); // Higher cap for performance rendering
-      for (let i = 0; i < actualCount; i++) {
-        nodes.push(new Node(width, height));
-      }
-    };
-
-    // Events
     const onMouseMove = (e: MouseEvent) => {
       mouse.x = e.clientX;
       mouse.y = e.clientY;
@@ -226,26 +139,34 @@ export default function NeuralBackground() {
     };
 
     const onClick = (e: MouseEvent) => {
-      ripples.push(new Ripple(e.clientX, e.clientY));
-      
-      // Force spawn a burst of signals in the local area
-      for (let i = 0; i < nodes.length; i++) {
-        let dx = nodes[i].x - e.clientX;
-        let dy = nodes[i].y - e.clientY;
-        if (Math.sqrt(dx * dx + dy * dy) < 120) { // Limit tight burst to exactly where you click
-          // Find a connected node to send to
-          for (let j = 0; j < nodes.length; j++) {
-            if (i !== j) {
-              let ddx = nodes[i].x - nodes[j].x;
-              let ddy = nodes[i].y - nodes[j].y;
-              if (Math.sqrt(ddx * ddx + ddy * ddy) < CONFIG.MAX_DISTANCE) {
-                if (Math.random() > 0.75) { // Lower local density so it's not overwhelming
-                  signals.push(new Signal(nodes[i], nodes[j]));
-                }
-              }
-            }
-          }
+      // Do not show node popups if the user has scrolled past the landing page
+      if (window.scrollY > window.innerHeight * 0.3) {
+        setActiveBox(null);
+        return;
+      }
+
+      let clickedNode: Node | null = null;
+      let minDistance = 40; // Click hit radius
+
+      for (let node of nodesRef.current) {
+        let dx = e.clientX - node.x;
+        let dy = e.clientY - node.y;
+        let dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < minDistance) {
+          minDistance = dist;
+          clickedNode = node;
         }
+      }
+
+      if (clickedNode) {
+        setActiveBox({
+          id: clickedNode.id,
+          x: clickedNode.x,
+          y: clickedNode.y,
+          concept: clickedNode.concept
+        });
+      } else {
+        setActiveBox(null);
       }
     };
 
@@ -255,111 +176,57 @@ export default function NeuralBackground() {
     window.addEventListener('mousedown', onClick);
     
     resize();
-    initNodes();
 
-    const drawNetwork = () => {
+    const drawNetwork = (time: number) => {
       ctx.clearRect(0, 0, width, height);
 
-      // Scroll factor: 0 at top, 1 when scrolled 600px down
-      let scrollY = window.scrollY || document.documentElement.scrollTop;
-      let scrollFactor = Math.min(scrollY / 600, 1);
-      
-      // Dynamically interpolate settings to reduce mesh quantity and interactions when scrolled
-      let dynamicMaxDistance = CONFIG.MAX_DISTANCE - (80 * scrollFactor); // Drops to ~140 distances
-      let dynamicMouseRadius = CONFIG.MOUSE_RADIUS - (100 * scrollFactor); // Drops to tight interactions
-      let dynamicSignalChance = CONFIG.SIGNAL_CHANCE - (0.035 * scrollFactor); // Very few signals past landing
+      let nodes = nodesRef.current;
 
-      // Connection Array to easily spawn signals on valid edges
-      let edges: [Node, Node][] = [];
+      // Update nodes
+      for (let node of nodes) {
+        node.update(time, mouse);
+      }
 
-      // Determine active count to limit nodes when scrolled
-      let targetActiveRatio = 1 - (0.55 * scrollFactor); // Leaves 45% of nodes
-      let activeNodeCount = Math.floor(nodes.length * targetActiveRatio);
-
-      // Update & Draw Lines First
+      // Draw Lines
       for (let i = 0; i < nodes.length; i++) {
-        // Evaluate node alpha to fade nodes gently out instead of snapping
-        let nodeAlpha = 1;
-        if (i > nodes.length * 0.45) {
-           let fadeStart = activeNodeCount;
-           if (i > fadeStart) {
-              nodeAlpha = Math.max(0, 1 - (i - fadeStart) / (nodes.length * 0.15));
-           }
-        }
-        
-        if (nodeAlpha <= 0) continue; // Skip completely faded nodes
-
-        nodes[i].update(width, height, mouse, dynamicMouseRadius);
-        
         for (let j = i + 1; j < nodes.length; j++) {
-            let jNodeAlpha = 1;
-            if (j > nodes.length * 0.45) {
-                let fadeStart = activeNodeCount;
-                if (j > fadeStart) jNodeAlpha = Math.max(0, 1 - (j - fadeStart) / (nodes.length * 0.15));
+          let dx = nodes[i].x - nodes[j].x;
+          let dy = nodes[i].y - nodes[j].y;
+          let distance = Math.sqrt(dx * dx + dy * dy);
+
+          if (distance < CONFIG.MAX_DISTANCE) {
+            let baseAlpha = 1 - (distance / CONFIG.MAX_DISTANCE);
+            let finalAlpha = baseAlpha * 0.4;
+
+            // Brighten if near mouse
+            if (mouse.active) {
+               let midX = (nodes[i].x + nodes[j].x) / 2;
+               let midY = (nodes[i].y + nodes[j].y) / 2;
+               let mouseDist = Math.sqrt(Math.pow(midX - mouse.x, 2) + Math.pow(midY - mouse.y, 2));
+               if (mouseDist < CONFIG.MOUSE_RADIUS) {
+                 finalAlpha = Math.min(1, finalAlpha + 0.3);
+               }
             }
-            if (jNodeAlpha <= 0) continue;
 
-            let minAlpha = Math.min(nodeAlpha, jNodeAlpha);
-
-            let dx = nodes[i].x - nodes[j].x;
-            let dy = nodes[i].y - nodes[j].y;
-            let distance = Math.sqrt(dx * dx + dy * dy);
-
-            if (distance < dynamicMaxDistance) {
-              edges.push([nodes[i], nodes[j]]);
-              let baseAlpha = 1 - (distance / dynamicMaxDistance);
-              
-              // Highlight connections near mouse locally
-              let mouseDistA = Math.sqrt(Math.pow(nodes[i].x - mouse.x, 2) + Math.pow(nodes[i].y - mouse.y, 2));
-              if (mouse.active && mouseDistA < dynamicMouseRadius) {
-                 baseAlpha = Math.min(1, baseAlpha + 0.3); // Brighten
-              }
-              
-              let finalAlpha = baseAlpha * minAlpha;
-
-              ctx.beginPath();
-              ctx.moveTo(nodes[i].x, nodes[i].y);
-              ctx.lineTo(nodes[j].x, nodes[j].y);
-              ctx.strokeStyle = `rgba(168, 162, 158, ${finalAlpha * 0.3})`;
-              ctx.lineWidth = 0.8;
-              ctx.stroke();
-            }
-        }
-        
-        // Draw Nodes with matched alpha
-        nodes[i].draw(ctx, nodeAlpha);
-      }
-
-      // Spawn Signals Randomly
-      if (edges.length > 0 && Math.random() < dynamicSignalChance) {
-        let edge = edges[Math.floor(Math.random() * edges.length)];
-        // Random direction
-        if (Math.random() > 0.5) {
-          signals.push(new Signal(edge[0], edge[1]));
-        } else {
-          signals.push(new Signal(edge[1], edge[0]));
+            ctx.beginPath();
+            ctx.moveTo(nodes[i].x, nodes[i].y);
+            ctx.lineTo(nodes[j].x, nodes[j].y);
+            ctx.strokeStyle = `rgba(168, 162, 158, ${finalAlpha})`;
+            ctx.lineWidth = 0.8;
+            ctx.stroke();
+          }
         }
       }
 
-      // Update & Draw Signals
-      signals = signals.filter(s => s.active);
-      let signalAlpha = 1 - (0.8 * scrollFactor); // Dim signals as you scroll
-      for (let signal of signals) {
-        signal.update();
-        signal.draw(ctx, signalAlpha);
-      }
-
-      // Update & Draw Ripples
-      ripples = ripples.filter(r => r.active);
-      for (let ripple of ripples) {
-        ripple.update(nodes);
-        ripple.draw(ctx);
+      // Draw Nodes
+      for (let node of nodes) {
+        node.draw(ctx);
       }
 
       animationFrameId = requestAnimationFrame(drawNetwork);
     };
 
-    drawNetwork();
+    animationFrameId = requestAnimationFrame(drawNetwork);
 
     return () => {
       cancelAnimationFrame(animationFrameId);
@@ -371,10 +238,44 @@ export default function NeuralBackground() {
   }, []);
 
   return (
-    <canvas
-      ref={canvasRef}
-      className="fixed inset-0 pointer-events-none z-[1]" // Needs to be underneath text but visible
-      style={{ opacity: 0.8 }}
-    />
+    <>
+      <canvas
+        ref={canvasRef}
+        className="fixed inset-0 w-full h-full pointer-events-none z-[1]"
+        style={{ opacity: 0.8 }}
+      />
+      <AnimatePresence>
+        {activeBox && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8, y: 10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: 5 }}
+            transition={{ type: "spring", stiffness: 300, damping: 25 }}
+            className="fixed z-[100] bg-surface/90 backdrop-blur-md border border-white/10 rounded-xl p-4 shadow-xl pointer-events-auto"
+            style={{ 
+              left: activeBox.x + 20, 
+              top: activeBox.y - 20,
+              maxWidth: '220px'
+            }}
+          >
+            <div className="flex justify-between items-start mb-2 gap-4">
+              <div className="flex items-center gap-2 text-accent pb-1">
+                <div className="flex-shrink-0">{activeBox.concept.icon}</div>
+                <h4 className="text-[0.65rem] font-semibold tracking-widest uppercase">{activeBox.concept.title}</h4>
+              </div>
+              <button 
+                onClick={() => setActiveBox(null)}
+                className="text-secondary hover:text-white transition-colors pl-2 -mt-1 -mr-2"
+              >
+                ×
+              </button>
+            </div>
+            <p className="text-[0.7rem] leading-relaxed text-secondary border-t border-white/5 pt-2">
+              {activeBox.concept.desc}
+            </p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 }
