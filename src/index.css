@@ -2,14 +2,14 @@
 @import "tailwindcss";
 
 @theme {
-  --color-background: #0c0a09;
-  --color-surface: #1c1917;
-  --color-primary: #fdfcfb;
-  --color-secondary: #a8a29e;
-  --color-muted: #57534e;
+  --color-background: #0f1013;
+  --color-surface: #1a1a1e;
+  --color-primary: #f8f8fb;
+  --color-secondary: #a3a3a8;
+  --color-muted: #4e4e54;
   --color-accent: #e5c158;
   --color-accent-dim: #806b30;
-  --color-line: #292524;
+  --color-line: #2d2d34;
   --font-sans: 'Inter', sans-serif;
   --font-serif: 'Playfair Display', serif;
 
@@ -28,7 +28,23 @@ html {
 }
 
 body {
-  background-color: var(--color-background);
+  background-color: #0a0b0d; /* Slightly darker gray base */
+  background-image: 
+    /* Main top spotlight to create a premium gray glow */
+    radial-gradient(ellipse at 50% -10%, rgba(65, 65, 75, 0.3) 0%, rgba(20, 20, 24, 0.1) 60%, transparent 100%),
+    /* Secondary soft ambient light in the center */
+    radial-gradient(circle at 50% 40%, rgba(35, 35, 40, 0.15) 0%, transparent 70%),
+    /* Edge vignette to frame the content without making the whole screen black */
+    radial-gradient(circle at center, transparent 30%, rgba(3, 3, 5, 0.85) 150%);
+  background-size: 
+    100% 800px, 
+    100% 100%, 
+    100% 100%;
+  background-position: 
+    top center, 
+    center center, 
+    center center;
+  background-attachment: fixed;
   color: var(--color-primary);
   font-family: var(--font-sans);
   overflow-x: hidden;
@@ -42,7 +58,7 @@ body {
   inset: 0;
   pointer-events: none;
   z-index: 9998;
-  opacity: 0.025;
+  opacity: 0.045;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   background-repeat: repeat;
   background-size: 256px 256px;
@@ -102,7 +118,7 @@ body {
 /* Custom premium acrylic texture for cards */
 .glass-card {
   /* Essentially solid, letting only 4% of the background bleed through for a physical acrylic feel */
-  background: rgba(28, 25, 23, 0.96); 
+  background: rgba(22, 22, 25, 0.96); 
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   border: 1px solid rgba(255, 255, 255, 0.04);
@@ -122,7 +138,7 @@ body {
 }
 
 .glass-card:hover {
-  background: rgba(28, 25, 23, 0.99);
+  background: rgba(22, 22, 25, 0.99);
   border-color: rgba(255, 255, 255, 0.08);
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6);
 }
