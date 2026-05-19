@@ -27,6 +27,15 @@ export default function Loader({ onComplete }: { onComplete: () => void }) {
     setTotalLength(fullString.length);
 
     const typeCode = async () => {
+      // Preload image
+      const preloadPromise = new Promise((resolve) => {
+        const img = new Image();
+        img.onload = resolve;
+        img.onerror = resolve; // Continue even if it fails
+        img.src = "/hand.png";
+        if (img.complete) resolve(true);
+      });
+
       await new Promise(r => setTimeout(r, 600)); // Initial delay
       
       for (let i = 1; i <= fullString.length; i++) {
@@ -42,6 +51,10 @@ export default function Loader({ onComplete }: { onComplete: () => void }) {
       }
       
       await new Promise(r => setTimeout(r, 800)); // Wait before swiping up
+      
+      // Ensure image is loaded before completing
+      await preloadPromise;
+
       if (!mounted) return;
       onComplete(); // Triggers the layout shift to Hero
     };
